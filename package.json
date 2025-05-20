@@ -1,0 +1,18 @@
+{
+  "name": "we-do-api",
+  "version": "1.0.0",
+  "description": "Express API for AI-powered configuration assistant",
+  "main": "api.js",
+  "type": "module",
+  "scripts": {
+    "start": "node api.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "openai": "^4.100.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
