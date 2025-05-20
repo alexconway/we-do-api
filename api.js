@@ -115,22 +115,22 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+app.get("/onshape-docs", async (req, res) => {
+  const method = "GET";
+  const urlPath = "/api/documents";
+  const fullUrl = `https://cad.onshape.com${urlPath}`;
+
+  try {
+    const headers = signOnshapeRequest(method, urlPath);
+    const response = await axios.get(fullUrl, { headers });
+    res.json(response.data);
+  } catch (err) {
+    console.error("Onshape error:", err.response?.data || err.message);
+    res.status(500).json({ error: "Onshape request failed", details: err.response?.data || err.message });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);
 });
-
-function signOnshapeRequest(method, urlPath) {
-  const date = new Date().toUTCString();
-  const nonce = crypto.randomUUID();
-
-  const stringToSign = `${method}\n${urlPath}\n${date}\n${nonce}`;
-  const signature = crypto.createHmac("sha256", ON_SECRET).update(stringToSign).digest("base64");
-
-  const headers = {
-    "On-Nonce": nonce,
-    "Date": date,
-    "Authorization": `On ${ON_API_KEY}:HMAC_SHA256:${signature}`
-  };
-
-  return headers;
-}
