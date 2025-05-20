@@ -18,20 +18,20 @@ const openai = new OpenAI({
 const ON_API_KEY = process.env.ONSHAPE_API_KEY;
 const ON_SECRET = process.env.ONSHAPE_SECRET_KEY;
 
-function signOnshapeRequest(method, urlPath) {
+function signOnshapeRequest(method, path) {
   const date = new Date().toUTCString();
   const nonce = crypto.randomUUID();
 
-  const stringToSign = `${method}\n${urlPath}\n${date}\n${nonce}`;
-  const signature = crypto.createHmac("sha256", ON_SECRET).update(stringToSign).digest("base64");
+  const stringToSign = `${method}\n${path}\n${date}\n${nonce}`;
+  const signature = crypto.createHmac("sha256", ON_SECRET)
+    .update(stringToSign)
+    .digest("base64");
 
-  const headers = {
+  return {
     "On-Nonce": nonce,
     "Date": date,
     "Authorization": `On ${ON_API_KEY}:HMAC_SHA256:${signature}`
   };
-
-  return headers;
 }
 
 const systemPrompt = `You are a configuration assistant for custom storage organizers. Your goal is to collect all required design parameters from the user and return a complete JSON object with the final configuration. 
@@ -117,16 +117,19 @@ app.post("/chat", async (req, res) => {
 
 app.get("/onshape-docs", async (req, res) => {
   const method = "GET";
-  const urlPath = "/api/documents";
-  const fullUrl = `https://cad.onshape.com${urlPath}`;
+  const path = "/api/documents"; // critical: exact path, no domain
+  const url = `https://cad.onshape.com${path}`;
 
   try {
-    const headers = signOnshapeRequest(method, urlPath);
-    const response = await axios.get(fullUrl, { headers });
+    const headers = signOnshapeRequest(method, path);
+    const response = await axios.get(url, { headers });
     res.json(response.data);
   } catch (err) {
     console.error("Onshape error:", err.response?.data || err.message);
-    res.status(500).json({ error: "Onshape request failed", details: err.response?.data || err.message });
+    res.status(500).json({
+      error: "Onshape request failed",
+      details: err.response?.data || err.message
+    });
   }
 });
 
