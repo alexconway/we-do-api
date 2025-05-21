@@ -5,9 +5,16 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS for your frontend domain
+const allowedOrigins = ["https://we.do", "https://www.we.do"];
+
 app.use(cors({
-  origin: "https://www.we.do"
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
 }));
 
 app.use(express.json());
