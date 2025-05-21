@@ -18,7 +18,7 @@ const variableStudioElementId = "8a41a6b7d4bfb1ef99947ec7";
 app.post("/update-feature", async (req, res) => {
   const { height, width, depth } = req.body;
 
-  const url = `https://cad.onshape.com/api/variables/d/${documentId}/w/${workspaceId}/e/${variableStudioElementId}`;
+  const url = `https://cad.onshape.com/api/variables/d/${documentId}/w/${workspaceId}/e/${variableStudioElementId}/variables`;
 
   const variables = [
     {
@@ -44,6 +44,8 @@ app.post("/update-feature", async (req, res) => {
     }
   ];
 
+  console.log("📤 Sending variable update payload:", JSON.stringify(variables, null, 2));
+
   try {
     const response = await axios.put(url, variables, {
       auth: {
@@ -68,6 +70,7 @@ app.post("/update-feature", async (req, res) => {
     });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
