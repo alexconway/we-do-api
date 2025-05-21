@@ -52,13 +52,18 @@ app.post("/update-feature", async (req, res) => {
 
     res.json({ message: "Feature updated", response: response.data });
   } catch (err) {
-    console.error("Onshape update error:", err.response?.data || err.message);
+    console.error("🔥 Onshape update error:");
+    console.error("Status:", err.response?.status);
+    console.error("Data:", err.response?.data);
+    console.error("Message:", err.message);
+
     res.status(500).json({
       error: "Failed to update feature",
       details: err.response?.data || err.message
     });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
