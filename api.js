@@ -5,18 +5,7 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3000;
 
-const allowedOrigins = ["https://we.do", "https://www.we.do"];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  }
-}));
-
+app.use(cors()); // ← this is the only change here
 app.use(express.json());
 
 const ON_API_KEY = process.env.ONSHAPE_API_KEY;
