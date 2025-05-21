@@ -5,7 +5,7 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // ← this is the only change here
+app.use(cors());
 app.use(express.json());
 
 const ON_API_KEY = process.env.ONSHAPE_API_KEY;
@@ -25,9 +25,9 @@ app.post("/update-feature", async (req, res) => {
     name: "api_test",
     type: "api_test",
     parameters: [
-      { name: "height", value: `${height} * inch` },
-      { name: "width", value: `${width} * inch` },
-      { name: "depth", value: `${depth} * inch` }
+      { name: "height", value: height },
+      { name: "width", value: width },
+      { name: "depth", value: depth }
     ]
   };
 
