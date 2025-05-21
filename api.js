@@ -22,7 +22,6 @@ app.use(express.json());
 const ON_API_KEY = process.env.ONSHAPE_API_KEY;
 const ON_SECRET = process.env.ONSHAPE_SECRET_KEY;
 
-// Constants specific to your setup
 const documentId = "fb175ab4a74c1755a9ef3489";
 const workspaceId = "70c878d3af18a26b0749b45d";
 const partStudioElementId = "f5c1eee7f5f2083f147d752d";
@@ -32,15 +31,22 @@ app.post("/update-feature", async (req, res) => {
 
   const url = `https://cad.onshape.com/api/partstudios/d/${documentId}/w/${workspaceId}/e/${partStudioElementId}/features`;
 
+  const featureDefinition = {
+    featureId: "api_test",
+    name: "api_test",
+    type: "api_test",
+    parameters: [
+      { name: "height", value: `${height} * inch` },
+      { name: "width", value: `${width} * inch` },
+      { name: "depth", value: `${depth} * inch` }
+    ]
+  };
+
   try {
     const response = await axios.post(url, {
-      featureId: "api_test",
-      featureType: "api_test",
-      parameters: [
-        { name: "height", value: `${height} in` },
-        { name: "width", value: `${width} in` },
-        { name: "depth", value: `${depth} in` }
-      ]
+      features: [featureDefinition],
+      rollbackBarIndex: 0,
+      message: "Add feature via API"
     }, {
       auth: {
         username: ON_API_KEY,
