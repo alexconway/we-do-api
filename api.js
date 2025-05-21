@@ -7,12 +7,13 @@ const port = process.env.PORT || 3000;
 const ON_API_KEY = process.env.ONSHAPE_API_KEY;
 const ON_SECRET = process.env.ONSHAPE_SECRET_KEY;
 
-// Replace these with your actual doc + workspace IDs
+// Hardcoded doc/workspace/element IDs for "API TEST"
 const documentId = "fb175ab4a74c1755a9ef3489";
 const workspaceId = "70c878d3af18a26b0749b45d";
+const featureStudioElementId = "555fe81a7df93fe2e11a084d";
 
-app.get("/custom-features", async (req, res) => {
-  const url = `https://cad.onshape.com/api/documents/d/${documentId}/w/${workspaceId}/elements`;
+app.get("/featurestudio-source", async (req, res) => {
+  const url = `https://cad.onshape.com/api/featurestudios/d/${documentId}/w/${workspaceId}/e/${featureStudioElementId}`;
 
   try {
     const response = await axios.get(url, {
@@ -25,16 +26,14 @@ app.get("/custom-features", async (req, res) => {
       }
     });
 
-    const elements = response.data;
-    const featureStudios = elements.filter(
-      el => el.elementType === "FEATURESTUDIO"
-    );
-
-    res.json({ featureStudios });
+    res.json({
+      name: response.data.name,
+      source: response.data.source
+    });
   } catch (err) {
     console.error("Onshape error:", err.response?.data || err.message);
     res.status(500).json({
-      error: "Failed to fetch FeatureStudios",
+      error: "Failed to fetch FeatureStudio source",
       details: err.response?.data || err.message
     });
   }
