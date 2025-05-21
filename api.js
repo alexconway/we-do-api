@@ -20,16 +20,32 @@ app.post("/update-feature", async (req, res) => {
 
   const url = `https://cad.onshape.com/api/variables/d/${documentId}/w/${workspaceId}/e/${variableStudioElementId}`;
 
-  const payload = {
-    variables: [
-      { name: "height", expression: height },
-      { name: "width", expression: width },
-      { name: "depth", expression: depth }
-    ]
-  };
+  const variables = [
+    {
+      type: "LENGTH",
+      name: "height",
+      value: null,
+      description: "",
+      expression: `${height} in`
+    },
+    {
+      type: "LENGTH",
+      name: "width",
+      value: null,
+      description: "",
+      expression: `${width} in`
+    },
+    {
+      type: "LENGTH",
+      name: "depth",
+      value: null,
+      description: "",
+      expression: `${depth} in`
+    }
+  ];
 
   try {
-    const response = await axios.put(url, payload, {
+    const response = await axios.put(url, variables, {
       auth: {
         username: ON_API_KEY,
         password: ON_SECRET
@@ -39,7 +55,7 @@ app.post("/update-feature", async (req, res) => {
       }
     });
 
-    res.json({ message: "Variables updated", response: response.data });
+    res.json({ message: "Variables updated successfully", response: response.data });
   } catch (err) {
     console.error("🔥 Onshape variable update error:");
     console.error("Status:", err.response?.status);
