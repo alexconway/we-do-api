@@ -7,8 +7,12 @@ const port = process.env.PORT || 3000;
 const ON_API_KEY = process.env.ONSHAPE_API_KEY;
 const ON_SECRET = process.env.ONSHAPE_SECRET_KEY;
 
-app.get("/onshape-docs", async (req, res) => {
-  const url = "https://cad.onshape.com/api/documents";
+// Replace these with your actual doc + workspace IDs
+const documentId = "fb175ab4a74c1755a9ef3489";
+const workspaceId = "70c878d3af18a26b0749b45d";
+
+app.get("/custom-features", async (req, res) => {
+  const url = `https://cad.onshape.com/api/documents/d/${documentId}/w/${workspaceId}/elements`;
 
   try {
     const response = await axios.get(url, {
@@ -21,11 +25,16 @@ app.get("/onshape-docs", async (req, res) => {
       }
     });
 
-    res.json(response.data);
+    const elements = response.data;
+    const featureStudios = elements.filter(
+      el => el.elementType === "FEATURESTUDIO"
+    );
+
+    res.json({ featureStudios });
   } catch (err) {
     console.error("Onshape error:", err.response?.data || err.message);
     res.status(500).json({
-      error: "Onshape request failed",
+      error: "Failed to fetch FeatureStudios",
       details: err.response?.data || err.message
     });
   }
